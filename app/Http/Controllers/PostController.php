@@ -7,16 +7,24 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::orderBy('created_at', 'desc')->paginate(10);
+        $query = Post::orderBy('created_at', 'desc');
+
+        if ($request->has('search')) {
+            $query->where('title', 'like', '%' . $request->input('search') . '%')
+                ->orWhere('body', 'like', '%' . $request->input('search') . '%');
+        }
+
+        $posts = $query->paginate(10);
+
         return view('post.index', compact('posts'));
     }
 
-    public function show()
+    public function show(Post $post)
     {
-        $posts = Post::orderBy('created_at', 'desc')->get();
-        return view('post.index', compact('posts'));
+
+        return view('post.show', compact('post'));
     }
 
     public function create()
