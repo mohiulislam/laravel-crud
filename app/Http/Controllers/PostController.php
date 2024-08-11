@@ -9,18 +9,18 @@ class PostController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Post::orderBy('created_at', 'desc');
+        $query = Post::query();
 
         if ($request->has('search')) {
             $query->where('title', 'like', '%' . $request->input('search') . '%')
                 ->orWhere('body', 'like', '%' . $request->input('search') . '%');
         }
+        $query->orderBy('created_at', 'desc');
 
         $posts = $query->paginate(10);
 
         return view('post.index', compact('posts'));
     }
-
     public function show(Post $post)
     {
 
@@ -39,11 +39,10 @@ class PostController extends Controller
             'body' => 'required',
         ]);
 
-        $post = Post::create($validatedData);
+        Post::create($validatedData);
 
-        return $post
-            ? redirect()->route('posts.index')->with('success', 'Post created successfully.')
-            : back()->withErrors(['error' => 'There was an error creating the post. Please try again.']);
+        return
+            redirect()->route('posts.index')->with('success', 'Post created successfully.');
     }
 
     public function edit(Post $post)
@@ -57,10 +56,9 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'body' => 'required',
         ]);
+        $post->update($validatedData);
 
-        return $post->update($validatedData)
-            ? redirect()->route('posts.index')->with('success', 'Post updated successfully.')
-            : back()->withErrors(['error' => 'There was an error updating the post. Please try again.']);
+        return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
 
     public function delete(Post $post)
@@ -70,8 +68,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        return $post->delete()
-            ? redirect()->route('posts.index')->with('success', 'Post deleted successfully.')
-            : back()->withErrors(['error' => 'There was an error deleting the post. Please try again.']);
+        $post->delete();
+        return redirect()->route('posts.index')->with('success', 'Post deleted successfully.');
     }
 }

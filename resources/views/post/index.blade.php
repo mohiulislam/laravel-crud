@@ -1,4 +1,9 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            {{ __('All posts') }}
+        </h2>
+    </x-slot>
     <div class="container mx-auto px-4 sm:px-8">
         <div class="flex justify-between mt-4">
             <form action="{{ route('posts.index') }}" method="GET" class="w-full">
