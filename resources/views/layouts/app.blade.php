@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -33,35 +33,32 @@
         <main>
             {{ $slot }}
         </main>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     </div>
     <script>
-        toastr.options = {
-            "closeButton": true,
-            "debug": false,
-            "newestOnTop": true,
-            "progressBar": true,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        };
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            iconColor: 'white',
+            customClass: {
+                popup: 'colored-toast',
+            },
+            showConfirmButton: false,
+            timer: 1500,
+            timerProgressBar: true,
+        })
+
         @if (Session::has('success'))
-            toastr.success("{{ Session::get('success') }}");
-        @elseif (Session::has('error'))
-            toastr.error("{{ Session::get('error') }}");
+            Toast.fire({
+                text: "{{ Session::get('success') }}",
+                icon: "success"
+            });
         @elseif (Session::has('info'))
-            toastr.info("{{ Session::get('info') }}");
-        @elseif (Session::has('warning'))
-            toastr.warning("{{ Session::get('warning') }}");
+            Toast.fire({
+                icon: 'info',
+                text: "{{ Session::get('info') }}",
+            })
         @endif
     </script>
 </body>

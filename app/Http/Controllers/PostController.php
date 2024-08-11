@@ -56,10 +56,16 @@ class PostController extends Controller
             'title' => 'required|max:255',
             'body' => 'required',
         ]);
+
+        if ($validatedData['title'] === $post->title && $validatedData['body'] === $post->body) {
+            return redirect()->route('posts.index')->with('info', 'No changes detected, post not updated.');
+        }
+
         $post->update($validatedData);
 
         return redirect()->route('posts.index')->with('success', 'Post updated successfully.');
     }
+
 
     public function delete(Post $post)
     {
